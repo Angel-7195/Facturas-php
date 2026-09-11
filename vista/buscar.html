@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Buscar producto</title>
+</head>
+
+<body>
+
+    <h1>Buscar producto</h1>
+
+    <label>Código del producto:</label>
+    <input type="text" id="codigo">
+
+    <button onclick="buscarProducto()">
+        Buscar
+    </button>
+
+    <br><br>
+
+    <div id="resultado"></div>
+
+    <br>
+
+    <a href="index.html">
+        Volver al registro
+    </a>
+
+    <script>
+
+        function buscarProducto() {
+
+            const codigo = document.getElementById("codigo").value;
+
+            fetch("../control/buscarProducto.php?codigo=" + codigo)
+
+                .then(respuesta => respuesta.json())
+
+                .then(producto => {
+
+                    const resultado =
+                        document.getElementById("resultado");
+
+                    if (producto === null) {
+
+                        resultado.innerHTML =
+                            "<p>Producto no encontrado</p>";
+
+                        return;
+                    }
+
+                    resultado.innerHTML = `
+                        <table border="1">
+                            <tr>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                                <th>Stock</th>
+                                <th>Valor unitario</th>
+                            </tr>
+
+                            <tr>
+                                <td>${producto.codigo}</td>
+                                <td>${producto.nombre}</td>
+                                <td>${producto.stock}</td>
+                                <td>${producto.valorUnitario}</td>
+                            </tr>
+                        </table>
+                    `;
+
+                })
+
+                .catch(error => {
+
+                    console.error("Error:", error);
+
+                });
+
+        }
+
+    </script>
+
+</body>
+
+</html>

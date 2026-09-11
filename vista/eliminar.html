@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Eliminar producto</title>
+</head>
+
+<body>
+
+    <h1>Eliminar producto</h1>
+
+    <label>Código del producto:</label>
+
+    <input
+        type="text"
+        id="codigoBuscar"
+    >
+
+    <button type="button" onclick="buscarProducto()">
+        Buscar
+    </button>
+
+    <br><br>
+
+    <div id="resultado"></div>
+
+    <p id="mensaje"></p>
+
+    <br>
+
+    <a href="index.html">
+        Volver al registro
+    </a>
+
+
+    <script>
+
+        function buscarProducto() {
+
+            const codigo =
+                document.getElementById("codigoBuscar").value;
+
+            fetch(
+                "../control/buscarProducto.php?codigo="
+                + encodeURIComponent(codigo)
+            )
+
+                .then(respuesta => respuesta.json())
+
+                .then(producto => {
+
+                    const resultado =
+                        document.getElementById("resultado");
+
+                    const mensaje =
+                        document.getElementById("mensaje");
+
+                    mensaje.innerHTML = "";
+
+                    if (producto === null) {
+
+                        resultado.innerHTML =
+                            "<p>Producto no encontrado</p>";
+
+                        return;
+                    }
+
+                    resultado.innerHTML = `
+                        <table border="1">
+
+                            <tr>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                                <th>Stock</th>
+                                <th>Valor unitario</th>
+                            </tr>
+
+                            <tr>
+                                <td>${producto.codigo}</td>
+                                <td>${producto.nombre}</td>
+                                <td>${producto.stock}</td>
+                                <td>${producto.valorUnitario}</td>
+                            </tr>
+
+                        </table>
+
+                        <br>
+
+                        <button
+                            onclick="eliminarProducto('${producto.codigo}')"
+                        >
+                            Eliminar producto
+                        </button>
+                    `;
+
+                })
+
+                .catch(error => {
+
+                    console.error("Error:", error);
+
+                });
+
+        }
+
+
+        function eliminarProducto(codigo) {
+
+            const confirmar = confirm(
+                "¿Seguro que desea eliminar este producto?"
+            );
+
+            if (!confirmar) {
+                return;
+            }
+
+            const datos = new FormData();
+
+            datos.append("codigo", codigo);
+
+            fetch("../control/eliminarProducto.php", {
+
+                method: "POST",
+                body: datos
+
+            })
+
+                .then(respuesta => respuesta.text())
+
+                .then(mensaje => {
+
+                    document.getElementById(
+                        "mensaje"
+                    ).innerHTML = mensaje;
+
+                    document.getElementById(
+                        "resultado"
+                    ).innerHTML = "";
+
+                })
+
+                .catch(error => {
+
+                    console.error("Error:", error);
+
+                });
+
+        }
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de productos</title>
+</head>
+
+<body>
+
+    <h1>Productos registrados</h1>
+
+    <table border="1">
+
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Stock</th>
+                <th>Valor unitario</th>
+            </tr>
+        </thead>
+
+        <tbody id="tablaProductos">
+
+        </tbody>
+
+    </table>
+
+    <br>
+
+    <a href="index.html">
+        Volver al registro
+    </a>
+
+    <script>
+
+        fetch("../control/listarProducto.php")
+            .then(respuesta => respuesta.json())
+            .then(productos => {
+
+                const tabla = document.getElementById("tablaProductos");
+
+                productos.forEach(producto => {
+
+                    const fila = document.createElement("tr");
+
+                    fila.innerHTML = `
+                        <td>${producto.codigo}</td>
+                        <td>${producto.nombre}</td>
+                        <td>${producto.stock}</td>
+                        <td>${producto.valorUnitario}</td>
+                    `;
+
+                    tabla.appendChild(fila);
+
+                });
+
+            })
+            .catch(error => {
+
+                console.error("Error:", error);
+
+            });
+
+    </script>
+
+</body>
+
+</html>
